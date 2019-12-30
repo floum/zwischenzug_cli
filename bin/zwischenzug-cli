@@ -1,3 +1,10 @@
 #!/usr/bin/env ruby
 
-p "Zwischenzug CLI"
+require 'thor'
+
+class ZwischenzugCLI < Thor
+  desc 'puzzle FEN', 'determines if FEN may be a puzzle'
+  def puzzle(fen)
+    p fen
+  end
+end
