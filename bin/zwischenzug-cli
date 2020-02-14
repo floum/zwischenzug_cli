@@ -2,7 +2,7 @@
 
 require 'thor'
 require 'zwischenzug_cli'
-require 'stockfish'
+require 'yaml'
 
 module ZwischenzugCLI
   class CLI < Thor
@@ -15,6 +15,26 @@ module ZwischenzugCLI
     option :format, default: 'yaml'
     def fetch(id)
       Lichess.fetch(id, options)
+    end
+
+    desc 'load FILE', 'load file to zwischenzug api'
+    option :host, default: 'localhost'
+    option :port, default: '3000'
+    option :username, aliases: ['-u']
+    option :password, aliases: ['-p']
+    def load(file)
+      api_options = {}
+      api_options[:username] = options.fetch(:username) { ENV.fetch('ZWISCHENZUG_USER') }
+      api_options[:password] = options.fetch(:password) { ENV.fetch('ZWISCHENZUG_PASSWORD') }
+      api_options[:host] = options[:host]
+      api_options[:port] = options[:port]
+
+      puzzles_map = YAML.load_file(file)
+      
+      api = ZwischenzugAPI.new(api_options)
+      puzzles_map['puzzles'].each do |puzzle|
+        api.create(puzzle)
+      end
     end
   end
 end
