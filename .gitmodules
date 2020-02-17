@@ -1,0 +1,3 @@
+[submodule "lib/pgn"]
+	path = lib/pgn
+	url = git@github.com:floum/pgn.git

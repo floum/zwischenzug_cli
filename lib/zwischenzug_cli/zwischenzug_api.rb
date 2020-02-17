@@ -7,6 +7,16 @@ module ZwischenzugCLI
       @port = options[:port]
     end
 
+    def create_puzzles_from_pgn(pgn)
+      response = Net::HTTP.start(pgn_uri.host, pgn_uri.port) do |http|
+        request = Net::HTTP::Post.new pgn_uri, 'Content-Type' => 'application/json'
+        form_data = [['pgn', pgn]]
+        request.set_form form_data, 'multipart/form-data'
+
+        http.request request
+      end
+    end
+
     def create(puzzle)
       game = PGN.parse(puzzle['pgn']).first
 
@@ -34,6 +44,10 @@ module ZwischenzugCLI
       end
 
       p response
+    end
+
+    def pgn_uri
+      URI.parse "http://#{@host}:#{@port}/pgn"
     end
 
     def puzzle_uri

@@ -17,24 +17,21 @@ module ZwischenzugCLI
       Lichess.fetch(id, options)
     end
 
-    desc 'load FILE', 'load file to zwischenzug api'
+    desc 'pgn PGN_FILE', 'load a pgn file to zwischenzug api'
     option :host, default: 'localhost'
     option :port, default: '3000'
     option :username, aliases: ['-u']
     option :password, aliases: ['-p']
-    def load(file)
+    def pgn(pgn_file)
       api_options = {}
       api_options[:username] = options.fetch(:username) { ENV.fetch('ZWISCHENZUG_USER') }
       api_options[:password] = options.fetch(:password) { ENV.fetch('ZWISCHENZUG_PASSWORD') }
       api_options[:host] = options[:host]
       api_options[:port] = options[:port]
 
-      puzzles_map = YAML.load_file(file)
-      
+      pgn_data = File.read(pgn_file)
       api = ZwischenzugAPI.new(api_options)
-      puzzles_map['puzzles'].each do |puzzle|
-        api.create(puzzle)
-      end
+      api.create_puzzles_from_pgn(pgn_data)
     end
   end
 end

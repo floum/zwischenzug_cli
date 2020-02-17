@@ -1,9 +1,6 @@
-RSpec.describe ZwischenzugCli do
-  it "has a version number" do
-    expect(ZwischenzugCli::VERSION).not_to be nil
-  end
+RSpec.describe PGN do
+  data = File.read('./polgar.pgn')
+  games = PGN.parse(data)
 
-  it "does something useful" do
-    expect(false).to eq(true)
-  end
+  p games.first.positions.first
 end
